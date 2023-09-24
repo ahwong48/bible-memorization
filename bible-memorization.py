@@ -1,30 +1,39 @@
+import os
+
+def clearScreen():
+    os.system("cls" if os.name == "nt" else "clear")
+
 def menu():
-    thorFile = open("./THOR.txt","r")    
+    memoFile = open("./THOR.txt","r")
+    clearScreen()
+    print("bible-memorization")
     print("-------------------------")
     print("Type \"memorize\" to go to memorize mode")
     print("Type \"recite\" to go to recite mode")
     print("Type \"quit\" at any input to quit the program")
     userInput = input()
-    switch(userInput, thorFile)
+    switch(userInput, memoFile)
     
-def switch(userInput, thorFile):
+def switch(userInput, memoFile):
     if(userInput == "memorize"):
-        memorize(thorFile)
+        memorize(memoFile)
     elif(userInput == "recite"):
-        recite(thorFile)
+        recite(memoFile)
     elif(userInput == "quit"):
         exit()
     else:
-        print("Incorrect input! Use \"memorize\", \"recite\", or \"quit\"")
+        print("Incorrect input! Use \"memorize\", \"recite\", or \"quit\"", end="\r")
         newUI = input()
         switch(userInput)
 
 def restartRecite():
-    thorFile = open("./THOR.txt","r")
-    switch("recite", thorFile)
+    memoFile = open("./THOR.txt","r")
+    switch("recite", memoFile)
 
-def recite(thorFile):
-    verses = thorFile.readlines()
+def recite(memoFile):
+    verses = memoFile.readlines()
+    clearScreen()
+    print("==RECITE==")
     for line1 in verses:
         x = line1.split("||")
         reference = x[0]
@@ -40,7 +49,6 @@ def recite(thorFile):
             print("Would you like to try again? (Y|N)")
             userInput = input()
             if(userInput=="Y" or userInput=="y"):
-                print("Good Luck, starting from the beginning")
                 restartRecite()
             else:
                 menu()
@@ -48,10 +56,10 @@ def recite(thorFile):
             print("correct")
         #print(line1)
 
-def memorize(thorFile):
+def memorize(memoFile):
     verseDictionary = {}
     verseList = []
-    verses = thorFile.readlines()
+    verses = memoFile.readlines()
     for line1 in verses:
         x = line1.split("||")
         reference = x[0]
@@ -60,6 +68,8 @@ def memorize(thorFile):
         verseList.append(reference)
         verseDictionary[reference] = verseText
     cont = True
+    clearScreen()
+    print("==Memorize==")
     while cont:
         print("===========================")
         print("Type \"quit\" at any input to quit the program")
@@ -70,7 +80,12 @@ def memorize(thorFile):
             cont = False
             exit()
         elif(verseList.count(verseChoice) != 0):
+            correct = False
             while cont:
+                clearScreen()
+                if(correct):
+                    print("correct")
+                correct = False
                 print(verseChoice)
                 userInput = input()
                 if(userInput == "quit"):
@@ -89,9 +104,8 @@ def memorize(thorFile):
                         cont = False
                         menu()
                 else:
-                    print("correct")
+                    correct = True
         else:
             print("Invalid Verse Choice.")
             
-print("The History Of Redemption")
 menu()
